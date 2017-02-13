@@ -5,14 +5,27 @@
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
 
-unless os.windows?
-  describe user('root') do
-    it { should exist }
-    skip 'This is an example test, replace with your own test.'
-  end
+describe command('curl http://localhost:80') do
+  its(:stdout) { should match(/It works/) }
 end
 
+describe package('apache2') do
+  it { should be_installed }
+end
+
+describe upstart_service('apache2') do
+  it { should be_enabled }
+  it { should be_running }
+end
+
+describe command('systemctl is-enabled apache2') do
+  its('exit_status') { should eq 0 }
+end
+
+# describe service('apache2') do
+#
+# end
+
 describe port(80) do
-  it { should_not be_listening }
-  skip 'This is an example test, replace with your own test.'
+  it { should be_listening }
 end
